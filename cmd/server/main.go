@@ -8,6 +8,8 @@ import (
 	"github.com/brunacotrim/api-product/internal/entity"
 	"github.com/brunacotrim/api-product/internal/infra/database"
 	"github.com/brunacotrim/api-product/internal/infra/database/webserver/handlers"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -28,6 +30,8 @@ func main() {
 	productDB := database.NewProduct(db)
 	productHandler := handlers.NewProductHandler(productDB)
 
-	http.HandleFunc("/products", productHandler.CreateProduct)
-	http.ListenAndServe(":8000", nil)
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Post("/products", productHandler.CreateProduct)
+	http.ListenAndServe(":8000", r)
 }
