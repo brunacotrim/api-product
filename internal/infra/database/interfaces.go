@@ -4,7 +4,7 @@ import "github.com/brunacotrim/api-product/internal/entity"
 
 type UserInterface interface {
 	Create(user *entity.User) error
-	FindbyEmail(emailId string) (*entity.User, error)
+	FindByEmail(emailId string) (*entity.User, error)
 }
 
 type ProductInterface interface {

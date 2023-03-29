@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/brunacotrim/api-product/configs"
@@ -19,7 +18,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(config)
 
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
@@ -27,8 +25,12 @@ func main() {
 	}
 
 	db.AutoMigrate(&entity.Product{}, &entity.User{})
+
 	productDB := database.NewProduct(db)
 	productHandler := handlers.NewProductHandler(productDB)
+
+	userDB := database.NewUser(db)
+	userHandler := handlers.NewUserHandler(userDB, config.TokenAuth, config.JWTExpiresIn)
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
@@ -37,6 +39,9 @@ func main() {
 	r.Get("/products", productHandler.GetProducts)
 	r.Put("/products/{id}", productHandler.UpdateProduct)
 	r.Delete("/products/{id}", productHandler.DeleteProduct)
+
+	r.Post("/users", userHandler.Create)
+	r.Post("/users/generate_token", userHandler.GetJWT)
 
 	http.ListenAndServe(":8000", r)
 }
