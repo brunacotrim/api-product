@@ -4,15 +4,35 @@ import (
 	"net/http"
 
 	"github.com/brunacotrim/api-product/configs"
+	_ "github.com/brunacotrim/api-product/docs"
 	"github.com/brunacotrim/api-product/internal/entity"
 	"github.com/brunacotrim/api-product/internal/infra/database"
 	"github.com/brunacotrim/api-product/internal/infra/database/webserver/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/jwtauth"
+	httpSwagger "github.com/swaggo/http-swagger"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
+
+// @title           API Products
+// @version         1.0
+// @description     Product API with auhtentication
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   Bruna Cotrim
+// @contact.url    https://github.com/brunacotrim
+// @contact.email  contact@email.com.br
+
+// @license.name   License
+// @license.url    https://github.com/brunacotrim
+
+// @host      localhost:8000
+// @BasePath  /
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 
 func main() {
 	config, err := configs.LoadConfig(".")
@@ -51,6 +71,8 @@ func main() {
 
 	r.Post("/users", userHandler.Create)
 	r.Post("/users/generate_token", userHandler.GetJWT)
+
+	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8000/docs/doc.json")))
 
 	http.ListenAndServe(":8000", r)
 }
