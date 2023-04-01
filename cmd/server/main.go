@@ -7,7 +7,7 @@ import (
 	_ "github.com/brunacotrim/api-product/docs"
 	"github.com/brunacotrim/api-product/internal/entity"
 	"github.com/brunacotrim/api-product/internal/infra/database"
-	"github.com/brunacotrim/api-product/internal/infra/database/webserver/handlers"
+	"github.com/brunacotrim/api-product/internal/infra/webserver/handlers"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/jwtauth"
